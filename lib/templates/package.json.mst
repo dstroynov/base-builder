@@ -1,0 +1,4 @@
+{
+{{indent}}"name": "{{projectName}}",
+{{indent}}"main": "start.js"
+}

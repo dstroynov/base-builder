@@ -1,0 +1,41 @@
+'use strict';
+
+{{#database}}
+/**
+ * Module dependencies.
+ */
+const db = require('../db');
+
+{{/database}}
+/**
+ * returns a user by ID
+ * @param  [int]      id       An identifier of a user
+ * @param  {Function} callback Function called after getting data
+ */
+exports.getById = function(id, callback) {
+};
+
+/**
+ * gets a user by provider's data
+ * @param  {string}   provider   provider's name ('e.g, google')
+ * @param  {string}   providerId provider's Id
+ * @param  {Function} callback   function to call after getting the data or on failure
+ */
+exports.getByProvider = function(provider, providerId, callback) {
+};
+
+/**
+ * Gets the first nonexistent username as given username plus a suffix (incremental number)
+ * @param  {string}   username username
+ * @param  {Function} callback function to call when a new username will be found
+ */
+exports.findUniqueUsername = function(username, callback) {
+};
+
+/**
+ * Saves a user together with his provider data (optional)
+ * @param  {Object}   user     Object with user's data
+ * @param  {Function} callback Function to call when a user
+ */
+exports.save = function(user, callback) {
+};

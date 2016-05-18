@@ -1,0 +1,23 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const winston = require('winston'),
+{{indentConst}}morgan = require('morgan'),
+{{indentConst}}_ = require('lodash'),
+{{indentConst}}config = require('../config');
+
+winston.emitErrs = true;
+
+_.forEach(config.log, (i, key) => {
+{{indent}}module.exports[key] = winston.loggers.add(key, i);
+});
+
+module.exports.requestsMiddleware = morgan('common', {
+{{indent}}stream: {
+{{indent}}{{indent}}write(message) {
+{{indent}}{{indent}}{{indent}}module.exports.access.info(message.replace(/[\n\r]*$/, ''));
+{{indent}}{{indent}}}
+{{indent}}}
+});

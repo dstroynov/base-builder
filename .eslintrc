@@ -1,0 +1,17 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "comma-dangle": ["error", "never"],
+    "func-names": "off",
+    "indent": ["error", 2, {"VariableDeclarator": {"let": 2, "const": 3}}],
+    "one-var": ["error", "always"],
+    "no-console": "off",
+    "no-multiple-empty-lines": ["error", {"max": 1}],
+    "radix": ["error", "as-needed"],
+    "space-before-function-paren": ["error", "never"],
+    "strict": "off"
+  },
+  "env": {
+    "node": true
+  }
+}

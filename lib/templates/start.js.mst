@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+{{#useCluster}}
+const cluster = require('cluster'),
+{{indentConst}}numCPUs = require('os').cpus().length,
+{{indentConst}}config = require('./config'),
+{{/useCluster}}
+{{^useCluster}}
+const config = require('./config'),
+{{/useCluster}}
+{{indentConst}}logger = require('./app/logger'),
+{{indentConst}}app = require('./app/app.js');
+
+{{#useCluster}}
+let i;
+
+{{/useCluster}}
+function showBootstrapInfo() {
+{{indent}}logger.app.info('----------------------------------------------------------------------------');
+{{indent}}logger.app.info('${config.app.title} application started:');
+{{indent}}logger.app.info('Port:\t\t\t${config.port}');
+{{indent}}logger.app.info('Environment:\t\t${process.env.NODE_ENV || \'dev\'}');
+{{#mysql}}
+{{indent}}logger.app.info('Database:\t\t\t${config.db.database}');
+{{/mysql}}
+{{#mongodb}}
+{{indent}}logger.app.info('Database:\t\t\t${config.db.uri}');
+{{/mongodb}}
+{{#redis}}
+{{indent}}logger.app.info('Database:\t\t\t${config.db.database}');
+{{/redis}}
+{{#couchdb}}
+{{indent}}logger.app.info('Database:\t\t\t${config.db.database}');
+{{/couchdb}}
+{{indent}}logger.app.info('HTTPS:\t\t\t${process.env.NODE_ENV === \'secure\' ? \'on\' : \'off\'}');
+{{#useCluster}}
+{{indent}}logger.app.info('Amount of workers:\t${numCPUs}');
+{{/useCluster}}
+{{indent}}logger.app.info('----------------------------------------------------------------------------');
+}
+
+function startListener() {
+{{indent}}app().listen(config.port);
+}
+
+{{#useCluster}}
+if (cluster.isMaster) {
+{{indent}}// Fork workers
+{{indent}}for (i = 0; i < numCPUs; i++) {
+{{indent}}{{indent}}cluster.fork();
+{{indent}}}
+{{indent}}showBootstrapInfo();
+} else {
+{{indent}}startListener();
+}
+{{/useCluster}}
+{{^useCluster}}
+showBootstrapInfo();
+startListener();
+{{/useCluster}}

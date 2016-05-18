@@ -1,0 +1,53 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+{{#mysql}}
+const mysql = require('mysql'),
+{{/mysql}}
+{{#mongodb}}
+const mongoose = require('mongoose'),
+{{/mongodb}}
+{{#redis}}
+const redis = require('redis'),
+{{/redis}}
+{{#couchdb}}
+const cradle = require('cradle'),
+{{/couchdb}}
+{{indentConst}}config = require('../config'),
+{{#mysql}}
+{{indentConst}}pool = mysql.createPool(config.db),
+{{indentConst}}logger = require('./logger');
+{{/mysql}}
+{{#mongodb}}
+{{indentConst}}logger = require('./logger');
+{{/mongodb}}
+{{#redis}}
+{{indentConst}}client = redis.createClient(),
+{{indentConst}}logger = require('./logger');
+{{/redis}}
+{{#couchdb}}
+{{indentConst}}db = new(cradle.Connection)().database(config.db.database);
+{{/couchdb}}
+
+{{#mysql}}
+pool.on('error', (err) => {
+{{indent}}logger.app.error(`MySQL error: ${err}`);
+});
+
+{{/mysql}}
+{{#mongodb}}
+mongoose.connect(config.db.uri, config.db.options);
+
+mongoose.connection.on('error', (err) => {
+{{indent}}logger.app.error(`MongoDB connection error: ${err}`);
+{{indent}}process.exit(-1);
+});
+{{/mongodb}}
+{{#redis}}
+client.select(config.db.database);
+client.on('error', (err) => {
+{{indent}}logger.app.error(`Redis error: ${err}`);
+});
+{{/redis}}

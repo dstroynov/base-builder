@@ -1,0 +1,118 @@
+/* eslint global-require: "off" */
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const path = require('path'),
+{{indentConst}}fs = require('fs'),
+{{indentConst}}https = require('https'),
+{{indentConst}}express = require('express'),
+{{indentConst}}compression = require('compression'),
+{{indentConst}}bodyParser = require('body-parser'),
+{{indentConst}}session = require('express-session'),
+{{#sessionMysql}}
+{{indentConst}}MySQLSessionStore = require('connect-mysql')(session),
+{{/sessionMysql}}
+{{#sessionMongodb}}
+{{indentConst}}MongoSessionStore = require('connect-mongo')(session),
+{{/sessionMongodb}}
+{{#sessionRedis}}
+{{indentConst}}RedisSessionStore = require('connect-redis')(session),
+{{/sessionRedis}}
+{{indentConst}}methodOverride = require('method-override'),
+{{indentConst}}cookieParser = require('cookie-parser'),
+{{indentConst}}helmet = require('helmet'),
+{{indentConst}}config = require('../config'),
+{{#oauth}}
+{{indentConst}}passport = require('passport'),
+{{/oauth}}
+{{indentConst}}logger = require('./logger');
+
+{{#oauth}}
+require('./passport')();
+{{/oauth}}
+require('./lodash-mixins')();
+
+function startHttpsServer(app) {
+{{indent}}// Load SSL key and certificate
+{{indent}}const privateKey = fs.readFileSync('./config/sslcerts/key.pem', 'utf8'),
+{{indent}}{{indentConst}}certificate = fs.readFileSync('./config/sslcerts/cert.pem', 'utf8');
+
+{{indent}}// Return HTTPS server instance
+{{indent}}return https.createServer({
+{{indent}}{{indent}}key: privateKey,
+{{indent}}{{indent}}cert: certificate
+{{indent}}}, app);
+}
+
+module.exports = function() {
+{{indent}}const app = express();
+
+{{indent}}// Should be placed before express.static
+{{indent}}app.use(compression({
+{{indent}}{{indent}}// only compress files for the following content types
+{{indent}}{{indent}}filter(req, res) {
+{{indent}}{{indent}}{{indent}}return (/json|text|javascript|css/).test(res.getHeader('Content-Type'));
+{{indent}}{{indent}}},
+
+{{indent}}{{indent}}// zlib option for compression level
+{{indent}}{{indent}}level: 3
+{{indent}}}));
+
+{{indent}}// Enable HTTP requests logger
+{{indent}}app.use(logger.requestsMiddleware);
+
+{{indent}}// Request body parsing middleware should be above methodOverride
+{{indent}}app.use(bodyParser.urlencoded({
+{{indent}}{{indent}}extended: true
+{{indent}}}));
+{{indent}}app.use(bodyParser.json());
+{{indent}}app.use(methodOverride());
+
+{{indent}}// Use helmet to secure Express headers
+{{indent}}app.use(helmet.xframe());
+{{indent}}app.use(helmet.xssFilter());
+{{indent}}app.use(helmet.nosniff());
+{{indent}}app.use(helmet.ienoopen());
+{{indent}}app.disable('x-powered-by');
+
+{{indent}}// Set the app router and static folder
+{{indent}}app.use(express.static(path.resolve('./public'), { maxAge: 1000 * 60 * 60 * 24/* 1 day */ }));
+
+{{indent}}// CookieParser should be above session
+{{indent}}app.use(cookieParser());
+
+{{indent}}app.use(session({
+{{#sessionMysql}}
+{{indent}}{{indent}}store: new MySQLSessionStore(config.sessionDb),
+{{/sessionMysql}}
+{{#sessionMongodb}}
+{{indent}}{{indent}}store: new MongoSessionStore(config.sessionDb),
+{{/sessionMongodb}}
+{{#sessionRedis}}
+{{indent}}{{indent}}store: new RedisSessionStore(config.sessionDb),
+{{/sessionRedis}}
+{{indent}}{{indent}}secret: config.sessionSecret,
+{{indent}}{{indent}}resave: true,
+{{indent}}{{indent}}saveUninitialized: true,
+{{indent}}{{indent}}cookie: config.sessionCookie,
+{{indent}}{{indent}}name: config.sessionName
+{{indent}}}));
+
+{{#oauth}}
+{{indent}}// use passport session
+{{indent}}app.use(passport.initialize());
+{{indent}}app.use(passport.session());
+
+{{/oauth}}
+{{indent}}if (process.env.NODE_ENV === 'secure') {
+{{indent}}{{indent}}return startHttpsServer(app);
+{{indent}}}
+
+{{indent}}// Add routing files
+{{indent}}require('./routes')(app);
+
+{{indent}}// Return Express server instance
+{{indent}}return app;
+};

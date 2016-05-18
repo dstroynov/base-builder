@@ -1,0 +1,37 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const passport = require('passport'),
+{{indentConst}}GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+{{indentConst}}config = require('../index'),
+{{indentConst}}users = require('../../app/controllers/auth');
+
+module.exports = function() {
+{{indent}}passport.use(new GoogleStrategy({
+{{indent}}{{indent}}clientID: config.google.clientID,
+{{indent}}{{indent}}clientSecret: config.google.clientSecret,
+{{indent}}{{indent}}callbackURL: config.google.callbackURI,
+{{indent}}{{indent}}passReqToCallback: true
+{{indent}}},
+{{indent}}(req, accessToken, refreshToken, profile, done) => {
+{{indent}}{{indent}}/* eslint no-underscore-dangle: "off" */
+{{indent}}{{indent}}const providerData = profile._json,
+{{indent}}{{indent}}{{indentConst}}providerUserProfile = {
+{{indent}}{{indent}}{{indentConst}}{{indent}}firstName: profile.name.givenName,
+{{indent}}{{indent}}{{indentConst}}{{indent}}lastName: profile.name.familyName,
+{{indent}}{{indent}}{{indentConst}}{{indent}}displayName: profile.displayName,
+{{indent}}{{indent}}{{indentConst}}{{indent}}email: profile.emails[0].value,
+{{indent}}{{indent}}{{indentConst}}{{indent}}username: profile.username,
+{{indent}}{{indent}}{{indentConst}}{{indent}}provider: 'google',
+{{indent}}{{indent}}{{indentConst}}{{indent}}providerIdentifierField: 'id',
+{{indent}}{{indent}}{{indentConst}}{{indent}}providerData
+{{indent}}{{indent}}{{indentConst}}};
+
+{{indent}}{{indent}}providerData.accessToken = accessToken;
+{{indent}}{{indent}}providerData.refreshToken = refreshToken;
+
+{{indent}}{{indent}}users.saveOAuthUserProfile(req, providerUserProfile, done);
+{{indent}}}));
+};

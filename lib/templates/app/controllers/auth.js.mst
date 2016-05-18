@@ -1,0 +1,65 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const passport = require('passport'),
+{{indentConst}}User = require('../models/User');
+
+/**
+ * Helper function to save or update a OAuth user profile
+ */
+exports.saveOAuthUserProfile = function(req, profile, done) {
+{{indent}}if (!req.user) {
+{{indent}}{{indent}}User.getByProvider(
+{{indent}}{{indent}}{{indent}}profile.provider,
+{{indent}}{{indent}}{{indent}}profile.providerData[profile.providerIdentifierField],
+{{indent}}{{indent}}{{indent}}(providerErr, user) => {
+{{indent}}{{indent}}{{indent}}{{indent}}if (providerErr || user) {
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}done(providerErr, user);
+{{indent}}{{indent}}{{indent}}{{indent}}} else {
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}const possibleUsername = profile.username ||
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indentConst}}{{indent}}(profile.email ? profile.email.split('@')[0] : '');
+
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}User.findUniqueUsername(possibleUsername, (uniqueNameErr, availableUsername) => {
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}User.save({
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}first_name: profile.firstName,
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}last_name: profile.lastName,
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}username: availableUsername,
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}display_name: profile.displayName,
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}email: profile.email,
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}provider: profile.provider,
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}providerId: profile.providerData[profile.providerIdentifierField]
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}}, done);
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}});
+{{indent}}{{indent}}{{indent}}{{indent}}}
+{{indent}}{{indent}}{{indent}}}
+{{indent}}{{indent}});
+{{indent}}}
+};
+
+exports.oauthCallback = function(strategy, successRedirect, failureRedirect) {
+{{indent}}return function(req, res, next) {
+{{indent}}{{indent}}passport.authenticate(strategy, (authErr, user) => {
+{{indent}}{{indent}}{{indent}}if (authErr || !user) {
+{{indent}}{{indent}}{{indent}}{{indent}}res.redirect(failureRedirect);
+{{indent}}{{indent}}{{indent}}} else {
+{{indent}}{{indent}}{{indent}}{{indent}}req.login(user, (loginErr) => {
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}if (loginErr) {
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}res.redirect(failureRedirect);
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}} else {
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}res.redirect(successRedirect);
+{{indent}}{{indent}}{{indent}}{{indent}}{{indent}}}
+{{indent}}{{indent}}{{indent}}{{indent}}});
+{{indent}}{{indent}}{{indent}}}
+{{indent}}{{indent}}})(req, res, next);
+{{indent}}};
+};
+
+exports.requiresLogin = function(req, res, next) {
+{{indent}}if (!req.isAuthenticated()) {
+{{indent}}{{indent}}res.status(403).end();
+{{indent}}} else {
+{{indent}}{{indent}}next();
+{{indent}}}
+};

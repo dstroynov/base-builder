@@ -1,0 +1,78 @@
+'use strict';
+
+module.exports = {
+{{indent}}port: process.env.PORT || 8443,
+
+{{#mysql}}
+{{indent}}db: {
+{{indent}}{{indent}}host: YOUR_MYSQL_HOSTNAME,
+{{indent}}{{indent}}user: YOUR_MYSQL_USERNAME,
+{{indent}}{{indent}}password: YOUR_MYSQL_PASSWORD,
+{{indent}}{{indent}}database: YOUR_MYSQL_DATABASE
+{{indent}}},
+
+{{/mysql}}
+{{#mongodb}}
+{{indent}}db: {
+{{indent}}{{indent}}uri: YOUR_MONGODB_CONNECTION_STRING,
+{{indent}}{{indent}}options: {
+{{indent}}{{indent}}{{indent}}user: YOUR_MONGODB_USERNAME,
+{{indent}}{{indent}}{{indent}}pass: YOUR_MONGODB_PASSWORD
+{{indent}}{{indent}}}
+{{indent}}},
+
+{{/mongodb}}
+{{#redis}}
+{{indent}}db: {
+{{indent}}{{indent}}database: YOUR_REDIS_DATABASE_NUMBER
+{{indent}}},
+
+{{/redis}}
+{{#couchdb}}
+{{indent}}db: {
+{{indent}}{{indent}}database: YOUR_COUCHDB_DATABASE
+{{indent}}},
+
+{{/couchdb}}
+{{#sessionMysql}}
+{{indent}}sessionDb: {
+{{indent}}{{indent}}pool: true,
+{{indent}}{{indent}}config: {
+{{indent}}{{indent}}{{indent}}host: YOUR_SESSION_MYSQL_HOSTNAME,
+{{indent}}{{indent}}{{indent}}user: YOUR_SESSION_MYSQL_USERNAME,
+{{indent}}{{indent}}{{indent}}password: YOUR_SESSION_MYSQL_PASSWORD,
+{{indent}}{{indent}}{{indent}}database: YOUR_SESSION_MYSQL_DATABASE
+{{indent}}{{indent}}}
+{{indent}}},
+
+{{/sessionMysql}}
+{{#sessionMongodb}}
+{{indent}}sessionDb: {
+{{indent}}{{indent}}uri: YOUR_SESSION_MONGODB_CONNECTION_STRING,
+{{indent}}{{indent}}options: {
+{{indent}}{{indent}}{{indent}}user: YOUR_SESSION_MONGODB_USERNAME,
+{{indent}}{{indent}}{{indent}}pass: YOUR_SESSION_MONGODB_PASSWORD
+{{indent}}{{indent}}}
+{{indent}}},
+
+{{/sessionMongodb}}
+{{#sessionRedis}}
+{{indent}}sessionDb: {
+{{indent}}{{indent}}database: YOUR_SESSION_REDIS_DATABASE_NUMBER
+{{indent}}},
+
+{{/sessionRedis}}
+{{#oauth}}
+{{indent}}google: {
+{{indent}}{{indent}}clientID: YOUR_GOOGLE_CLIENT_ID,
+{{indent}}{{indent}}clientSecret: YOUR_GOOGLE_CLIENT_SECRET,
+{{indent}}{{indent}}callbackURI: '/auth/google/callback'
+{{indent}}},
+
+{{/oauth}}
+{{indent}}// session config
+{{indent}}sessionSecret: '{{sessionSecretProd}}',
+{{indent}}sessionCookie: {
+{{indent}}{{indent}}secure: true
+{{indent}}}
+};

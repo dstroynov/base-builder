@@ -1,0 +1,25 @@
+/* eslint global-require: "off" */
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const passport = require('passport'),
+{{indentConst}}User = require('./models/User');
+
+/**
+ * Module init function.
+ */
+module.exports = function() {
+{{indent}}passport.serializeUser((user, done) => {
+{{indent}}{{indent}}done(null, user.id);
+{{indent}}});
+
+{{indent}}passport.deserializeUser((id, done) => {
+{{indent}}{{indent}}User.getById(id, (err, user) => {
+{{indent}}{{indent}}{{indent}}done(err, user);
+{{indent}}{{indent}}});
+{{indent}}});
+
+{{indent}}require('../config/strategies')();
+};

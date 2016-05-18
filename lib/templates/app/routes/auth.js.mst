@@ -1,0 +1,18 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const passport = require('passport'),
+{{indentConst}}auth = require('../controllers/auth');
+
+module.exports = function(app) {
+{{indent}}app.route('/auth/google').get(passport.authenticate('google', {
+{{indent}}{{indent}}scope: [
+{{indent}}{{indent}}{{indent}}'https://www.googleapis.com/auth/userinfo.profile',
+{{indent}}{{indent}}{{indent}}'https://www.googleapis.com/auth/userinfo.email'
+{{indent}}{{indent}}]
+{{indent}}}));
+
+{{indent}}app.route('/auth/google/callback').get(auth.oauthCallback('google', '/', '/'));
+};

@@ -1,0 +1,39 @@
+'use strict';
+
+module.exports = {
+{{indent}}app: {
+{{indent}}{{indent}}title: '{{projectName}}'
+{{indent}}},
+{{indent}}port: process.env.PORT || 8000,
+
+{{indent}}// session config
+{{indent}}sessionCookie: {
+{{indent}}{{indent}}path: '/',
+{{indent}}{{indent}}httpOnly: true,
+{{indent}}{{indent}}secure: false,
+{{indent}}{{indent}}maxAge: null
+{{indent}}},
+{{indent}}sessionName: 'uid',
+
+{{indent}}log: {
+{{indent}}{{indent}}access: {
+{{indent}}{{indent}}{{indent}}console: {
+{{indent}}{{indent}}{{indent}}{{indent}}colorize: true
+{{indent}}{{indent}}{{indent}}},
+{{indent}}{{indent}}{{indent}}file: {
+{{indent}}{{indent}}{{indent}}{{indent}}filename: 'logs/access.log',
+{{indent}}{{indent}}{{indent}}{{indent}}json: false
+{{indent}}{{indent}}{{indent}}}
+{{indent}}{{indent}}},
+{{indent}}{{indent}}app: {
+{{indent}}{{indent}}{{indent}}console: {
+{{indent}}{{indent}}{{indent}}{{indent}}colorize: true
+{{indent}}{{indent}}{{indent}}},
+{{indent}}{{indent}}{{indent}}file: {
+{{indent}}{{indent}}{{indent}}{{indent}}filename: 'logs/app.log',
+{{indent}}{{indent}}{{indent}}{{indent}}json: false,
+{{indent}}{{indent}}{{indent}}{{indent}}colorize: false
+{{indent}}{{indent}}{{indent}}}
+{{indent}}{{indent}}}
+{{indent}}}
+};

@@ -1,0 +1,36 @@
+[
+{{#eslinter}}
+  ".eslintrc",
+{{/eslinter}}
+  ".gitignore",
+  "app/app.js",
+{{#oauth}}
+  "app/controllers/auth.js",
+{{/oauth}}
+{{#database}}
+  "app/db.js",
+{{/database}}
+  "app/lodash-mixins.js",
+  "app/logger.js",
+  "app/models/index.js",
+{{#oauth}}
+  "app/models/User.js",
+  "app/passport.js",
+  "app/routes/auth.js",
+{{/oauth}}
+  "app/routes/index.js",
+  "config/env/all.js",
+  "config/env/dev.js",
+  "config/env/production.js",
+  "config/env/secure.js",
+  "config/index.js",
+{{#oauth}}
+  "config/strategies/google.js",
+  "config/strategies/index.js",
+{{/oauth}}
+  "config/sslcerts/.gitkeep",
+  "logs/.gitkeep",
+  "package.json",
+  "public/.gitkeep",
+  "start.js"
+]

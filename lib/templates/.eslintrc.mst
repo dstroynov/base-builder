@@ -1,0 +1,17 @@
+{
+{{indent}}"extends": "airbnb",
+{{indent}}"rules": {
+{{indent}}{{indent}}"comma-dangle": ["error", "never"],
+{{indent}}{{indent}}"func-names": "off",
+{{indent}}{{indent}}"indent": ["error", {{indentSize}}, {"VariableDeclarator": {"let": {{indentLetSize}}, "const": {{indentConstSize}}}}],
+{{indent}}{{indent}}"one-var": ["error", "always"],
+{{indent}}{{indent}}"no-console": "off",
+{{indent}}{{indent}}"no-multiple-empty-lines": ["error", {"max": 1}],
+{{indent}}{{indent}}"radix": ["error", "as-needed"],
+{{indent}}{{indent}}"space-before-function-paren": ["error", "never"],
+{{indent}}{{indent}}"strict": "off"
+{{indent}}},
+{{indent}}"env": {
+{{indent}}{{indent}}"node": true
+{{indent}}}
+}

@@ -1,0 +1,41 @@
+[
+  "body-parser",
+  "compression",
+  "cookie-parser",
+{{#eslinter}}
+  "eslint",
+  "eslint-config-airbnb",
+{{/eslinter}}
+  "express",
+  "express-session",
+  "helmet",
+  "lodash",
+  "method-override",
+  "morgan",
+{{#oauth}}
+  "passport",
+  "passport-google-oauth",
+{{/oauth}}
+{{#mysql}}
+  "mysql",
+{{/mysql}}
+{{#mongodb}}
+  "mongoose",
+{{/mongodb}}
+{{#redis}}
+  "redis",
+{{/redis}}
+{{#couchdb}}
+  "cradle",
+{{/couchdb}}
+{{#sessionMysql}}
+  "connect-mysql",
+{{/sessionMysql}}
+{{#sessionMongodb}}
+  "connect-mongo",
+{{/sessionMongodb}}
+{{#sessionRedis}}
+  "connect-redis",
+{{/sessionRedis}}
+  "winston"
+]

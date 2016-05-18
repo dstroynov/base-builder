@@ -1,0 +1,19 @@
+/* eslint global-require: "off" */
+'use strict';
+
+const fs = require('fs');
+
+/*
+ * Modules are automatically loaded once they are declared
+ * in the directory.
+ */
+module.exports = function(app) {
+{{indent}}fs.readdirSync(__dirname).forEach(file => {
+{{indent}}{{indent}}let moduleName;
+
+{{indent}}{{indent}}if (file !== 'index.js') {
+{{indent}}{{indent}}{{indent}}moduleName = file.substr(0, file.indexOf('.'));
+{{indent}}{{indent}}{{indent}}exports[moduleName] = require(`./${moduleName}`)(app);
+{{indent}}{{indent}}}
+{{indent}}});
+};

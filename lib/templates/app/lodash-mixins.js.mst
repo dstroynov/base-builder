@@ -1,0 +1,32 @@
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+const _ = require('lodash');
+
+module.exports = function() {
+{{indent}}_.mixin({
+
+{{indent}}{{indent}}/**
+{{indent}}{{indent}} * This method checks if a value an int (or string convertable to int)
+{{indent}}{{indent}} * @param  {any} value value to check
+{{indent}}{{indent}} * @return {boolean}
+{{indent}}{{indent}} */
+{{indent}}{{indent}}isInt(value) {
+{{indent}}{{indent}}{{indent}}return !isNaN(parseInt(value)) && isFinite(value);
+{{indent}}{{indent}}},
+
+{{indent}}{{indent}}/**
+{{indent}}{{indent}} * This method wraps a value into an array. If a value is already an array, then the content
+{{indent}}{{indent}} * of the value is put into a new array
+{{indent}}{{indent}} * @param  {any} value value to wrap
+{{indent}}{{indent}} * @return {Array}
+{{indent}}{{indent}} */
+{{indent}}{{indent}}wrapToArray(value) {
+{{indent}}{{indent}}{{indent}}const arr = [];
+
+{{indent}}{{indent}}{{indent}}return _.isArray(value) ? ([].push.apply(arr, value), arr) : [value];
+{{indent}}{{indent}}}
+{{indent}}});
+};
